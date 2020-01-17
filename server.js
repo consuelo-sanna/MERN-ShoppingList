@@ -2,8 +2,8 @@ const express = require('express');  //backend framework
 const mongoose = require('mongoose');  //interagisce con il DB mongo
 //const bodyParser = require('body-parser'); //permette di ricevere richieste e restituire i valori.. ad esempio da post
 const path = require('path');
-
-const items = require('./routes/api/items');    
+const config = require('config');
+  
 
 const app = express();   // inizializzo express dentro la var app
 
@@ -12,17 +12,19 @@ app.use(express.json());
 
 // DB Config
 // permette di creare un oggetto db con tutte le informazioni per connettermi al db
-const db = require('./config/keys').mongoURI;
+const db = config.get('mongoURI');
 
 // Connect to Mongo
-mongoose.connect(db, {useNewUrlParser: true})
+mongoose.connect(db, {useNewUrlParser: true, useCreateIndex: true})
     .then(() => console.log("MongoDB connected..."))
     .catch(err => console.log(err));
 
 // Use Routes
 /*  ogni richiesta di pagina /api/items viene "dirottata" sul file ./routes/api/items
 */ 
-app.use('/api/items', items);
+app.use('/api/items', require('./routes/api/items'));
+app.use('/api/users', require('./routes/api/users'));
+app.use('/api/auth', require('./routes/api/auth'));
 
 // Serve static assets if we are in production
 /** se sei in produzione, quando non matcha api/items carica la pag index.html */
