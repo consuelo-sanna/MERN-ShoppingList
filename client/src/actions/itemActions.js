@@ -2,6 +2,8 @@
 
 import axios from 'axios';
 import { GET_ITEMS, ADD_ITEM, DELETE_ITEM, ITEMS_LOADING } from './types';
+import { tokenConfig } from './authActions';
+import { returnErrors } from './errorActions';
 
 
 /* manda un'azione al reducer, in questo caso di tipo GET_ITEMS che entra nello
@@ -16,27 +18,30 @@ export const getItems = () => dispatch => {
         .then( res => dispatch({
             type: GET_ITEMS,
             payload: res.data
-        }));
+        }))
+        .catch(err => dispatch(returnErrors(err.response.data, err.response.status)));
     };
 
 
-export const addItem = (item) => dispatch => {
+export const addItem = (item) => (dispatch,getState) => {
     axios
-        .post('/api/items', item)
+        .post('/api/items', item, tokenConfig(getState))
         .then(res => dispatch({
             type: ADD_ITEM,
             payload: res.data
-        }));
+        }))
+        .catch(err => dispatch(returnErrors(err.response.data, err.response.status)));
 };
 
 
-export const deleteItem = (id) => dispatch => {
+export const deleteItem = (id) => (dispatch, getState) => {
     axios
-        .delete(`/api/items/${id}`)
+        .delete(`/api/items/${id}`, tokenConfig(getState))
         .then(res => dispatch({
             type: DELETE_ITEM,
             payload: id
-        }));
+        }))
+        .catch(err => dispatch(returnErrors(err.response.data, err.response.status)));
 };
 
 
