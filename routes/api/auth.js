@@ -1,5 +1,5 @@
 /*  qui sono presenti tutte le possibili "strade" e i comandi per
- *  l'autenticazione
+ *  l'autenticazione; è chi si occupa di controllare i dati e restituire il token
 */ 
 
 const express = require('express');
